@@ -111,7 +111,7 @@ Examples:
     password = args.password
     
     if not username:
-        username = input("Email: ")
+        username = input("Phone: " if args.region == "china" else "Email: ")
     
     if not password:
         password = getpass.getpass("Password: ")

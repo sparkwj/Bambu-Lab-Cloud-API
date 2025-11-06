@@ -25,6 +25,7 @@ import threading
 from flask import Flask, request, jsonify, Response
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from typing import Optional
 
 # Add parent directory to path for bambulab import
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -226,7 +227,7 @@ def cleanup_expired_mqtt_sessions():
             print(f"[MQTT] Cleanup error: {e}")
 
 
-def start_mqtt_session(device_id: str, real_token: str):
+def start_mqtt_session(device_id: str, real_token: str, region: Optional[str] = "global"):
     """
     Start MQTT monitoring session for a specific device.
     
@@ -257,7 +258,7 @@ def start_mqtt_session(device_id: str, real_token: str):
     
     try:
         # Get user profile for username
-        client = BambuClient(real_token)
+        client = BambuClient(real_token, region=region)
         profile = client.get(f"v1/user-service/my/profile")
         username = profile.get('uid') or profile.get('user_id')
         
@@ -399,7 +400,7 @@ def proxy_v1(endpoint):
         limiter.limit(RATE_LIMITS["default"])(lambda: None)()
     
     # Create client with real token
-    client = BambuClient(real_token)
+    client = BambuClient(real_token) #TODO(fix): handing region with TokenManager here
     
     # Get request body for write operations
     data = None

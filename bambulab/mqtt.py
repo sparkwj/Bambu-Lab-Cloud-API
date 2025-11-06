@@ -32,7 +32,8 @@ class MQTTClient:
     Connects to Bambu Lab cloud MQTT broker and subscribes to device updates.
     """
     
-    BROKER = "us.mqtt.bambulab.com"
+    BROKER_GLOBAL = "us.mqtt.bambulab.com"
+    BROKER_CHINA = "cn.mqtt.bambulab.com"
     PORT = 8883
     
     def __init__(
@@ -40,7 +41,8 @@ class MQTTClient:
         username: str,
         access_token: str,
         device_id: str,
-        on_message: Optional[Callable] = None
+        on_message: Optional[Callable] = None,
+        region: Optional[str] = "global"
     ):
         """
         Initialize MQTT client.
@@ -56,6 +58,8 @@ class MQTTClient:
         
         self.username = username
         self.access_token = access_token
+        self.region = region
+        self.broker = self.BROKER_CHINA if region == "china" else self.BROKER_GLOBAL
         self.device_id = device_id
         self.on_message_callback = on_message
         
@@ -68,7 +72,7 @@ class MQTTClient:
         """Callback when connected to broker"""
         if rc == 0:
             self.connected = True
-            logger.info(f"Connected to MQTT broker: {self.BROKER}")
+            logger.info(f"Connected to MQTT broker: {self.broker}")
             
             # Subscribe to device report topic
             topic = f"device/{self.device_id}/report"
@@ -126,8 +130,8 @@ class MQTTClient:
         self.client.tls_set(cert_reqs=ssl.CERT_REQUIRED, tls_version=ssl.PROTOCOL_TLS)
         
         # Connect
-        logger.info(f"Connecting to {self.BROKER}:{self.PORT}...")
-        self.client.connect(self.BROKER, self.PORT, keepalive=60)
+        logger.info(f"Connecting to {self.broker}:{self.PORT}...")
+        self.client.connect(self.broker, self.PORT, keepalive=60)
         
         if blocking:
             self.client.loop_forever()

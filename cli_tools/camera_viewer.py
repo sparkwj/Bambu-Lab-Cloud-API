@@ -247,10 +247,10 @@ def view_rtsp_stream(stream):
     print()
 
 
-def get_printer_info(token):
+def get_printer_info(token, region='global'):
     """Get printer information from cloud API."""
     try:
-        client = BambuClient(token)
+        client = BambuClient(token, region=region)
         devices = client.get_devices()
         
         if not devices:

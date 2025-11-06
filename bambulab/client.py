@@ -23,10 +23,12 @@ class BambuClient:
     Handles authentication, request formatting, and response parsing.
     """
     
-    BASE_URL = "https://api.bambulab.com"
+    #TODO(alstr): It is better to refactor all servers and session token/account in separate configuration management module
+    BASE_URL_GLOBAL = "https://api.bambulab.com"
+    BASE_URL_CHINA = "https://api.bambulab.cn"
     DEFAULT_TIMEOUT = 30
     
-    def __init__(self, token: str, timeout: int = None):
+    def __init__(self, token: str, timeout: int = None, region: Optional[str] = "global",):
         """
         Initialize the Bambu API client.
         
@@ -35,6 +37,8 @@ class BambuClient:
             timeout: Request timeout in seconds (default: 30)
         """
         self.token = token
+        self.region = region
+        self.base_url = self.BASE_URL_CHINA if region == "china" else self.BASE_URL_GLOBAL
         self.timeout = timeout or self.DEFAULT_TIMEOUT
         self.session = requests.Session()
         
@@ -69,7 +73,7 @@ class BambuClient:
         Raises:
             BambuAPIError: If request fails
         """
-        url = f"{self.BASE_URL}/{endpoint.lstrip('/')}"
+        url = f"{self.base_url}/{endpoint.lstrip('/')}"
         headers = self._get_headers()
         
         try:

@@ -10,6 +10,7 @@ import sys
 import os
 import time
 from datetime import datetime
+from typing import Optional
 
 # Add parent directory to path for bambulab import
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -21,7 +22,7 @@ from bambulab.utils import format_temperature, format_percentage, format_time_re
 class PrinterMonitor:
     """Monitor printer status with formatted output"""
     
-    def __init__(self, username: str, access_token: str, device_id: str):
+    def __init__(self, username: str, access_token: str, device_id: str, region: Optional[str] = "global"):
         self.device_id = device_id
         self.message_count = 0
         self.last_update = None
@@ -31,7 +32,8 @@ class PrinterMonitor:
             username=username,
             access_token=access_token,
             device_id=device_id,
-            on_message=self.on_message
+            on_message=self.on_message,
+            region=region
         )
     
     def on_message(self, device_id: str, data: dict):
@@ -112,7 +114,7 @@ class PrinterMonitor:
         print("Bambu Lab Printer Monitor")
         print("=" * 80)
         print(f"Device ID: {self.device_id}")
-        print(f"Broker: {self.client.BROKER}:{self.client.PORT}")
+        print(f"Broker: {self.client.broker}:{self.client.PORT}")
         print()
         print("Connecting to MQTT...")
         print("=" * 80)

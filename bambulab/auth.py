@@ -12,6 +12,7 @@ from typing import Dict, Optional, Callable
 from pathlib import Path
 
 
+# TODO(alstr): Refactor this class for token/account region handling
 class TokenManager:
     """
     Manages API token mappings and validation.
@@ -247,13 +248,13 @@ class BambuAuthenticator:
         """
         # Send verification code to email
         send_payload = {
-            "email": email,
+            "phone" if self.region == "china" else "email": email,
             "type": "codeLogin"
         }
         
         try:
             response = self.session.post(
-                f"{self.base_url}/v1/user-service/user/sendemail/code",
+                f"{self.base_url}/v1/user-service/user/" + "sendsmscode" if self.region == "china" else "sendemail/code",
                 json=send_payload,
                 timeout=30
             )
@@ -378,6 +379,7 @@ class BambuAuthenticator:
             # Don't fail if we can't save, just warn
             print(f"Warning: Could not save token to {self.token_file}: {e}")
     
+    #TODO(alstr): Refactor region handling for saved tokens
     def load_token(self) -> Optional[str]:
         """
         Load saved token from file.

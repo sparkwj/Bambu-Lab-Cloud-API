@@ -49,6 +49,7 @@ def main():
         print("  --firmware     Show firmware info")
         print("  --json         Output in JSON format")
         print("  --device <id>  Filter by device ID")
+        print("  --region       region (global or china), default is global")
         print()
         print("Examples:")
         print("  python query.py AADBD2wZe_token...")
@@ -72,12 +73,18 @@ def main():
         if idx + 1 < len(args):
             device_filter = args[idx + 1]
     
+    region = 'global'
+    if '--region' in args:
+        idx = args.index('--region')
+        if idx + 1 < len(args):
+            region = args[idx + 1]
+    
     # Default to showing devices
     show_devices = not any([show_status, show_profile, show_projects, show_firmware])
     
     # Create API client
     try:
-        client = BambuClient(access_token)
+        client = BambuClient(access_token, region=region)
     except Exception as e:
         print(f"Error: Failed to create API client: {e}")
         sys.exit(1)
