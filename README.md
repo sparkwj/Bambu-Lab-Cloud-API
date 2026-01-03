@@ -1,3 +1,5 @@
+# 适配中国区账号登录
+
 # Bambu Lab Cloud API Python Library Implementation
 
 **Documentation and tools for the Bambu Lab Cloud API based on network traffic analysis**
@@ -9,7 +11,7 @@
 
 Documentation and tooling for communicating with Bambu Lab 3D printers via their Cloud API, MQTT protocol, and local connections.
 
-My goal with this project was to create a proxy for handling read only data from my printer farm, but decided to expand it into a more complete library. I won't be targetting all of the functionality for testing, as I will primarily focus on read operations. 
+My goal with this project was to create a proxy for handling read only data from my printer farm, but decided to expand it into a more complete library. I won't be targetting all of the functionality for testing, as I will primarily focus on read operations.
 
 ## Features
 
